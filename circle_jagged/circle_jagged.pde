@@ -1,4 +1,3 @@
-import processing.svg.*;
 import processing.pdf.*;
 
 void setup() {
@@ -6,45 +5,43 @@ void setup() {
   background(255);
   stroke(0);
   noLoop();
-  //beginRecord(SVG, "filename.svg");
+  smooth(10);
   beginRecord(PDF, "filename.pdf");
 }
 
 void draw() {
-  for (int radius = 250; radius >= 10; radius -= 10)
+  for (int diameter = 300; diameter >= 10; diameter -= 10)
   {
-    circle(200, 200, radius);
+    circle(200, 200, diameter);
   }
-  
   loadPixels();
-  for (int x = 0; x < width; x++) {
-    // Loop through every pixel row
-    for (int y = 0; y < height; y++) {
-      // Use the formula to find the 1D location
+  int offset = -50;
+  int yCounter = 50;
+  for (int y = 0; y < height; y++) {
+
+    for (int x = 0; x < width; x++) {
+
       int loc = x + y * width;
-      if (y >= 150 && y <= 250)
-      {
-        if (get(x, y) != -1)
-        {
-          int rX = x;
-          if (x >= 50 && x <= 200){
-            rX = int(random(x-50, 350 - int(random(0, x))));
-          } else if (x > 200){
-            rX = int(random(x - 50, 200 + int(random(150, x))));
-          }
-            int randLoc = rX + y * width;
-            pixels[loc] = color(255);
-            stroke(255);
-            //point(x, y);
-            circle(x,y,1.0);
-            pixels[randLoc] = color(0);
-            stroke(0);
-            point(rX, y);
-            //circle(rX,y,1.0);
+
+      if (get(x, y) != -1){
+        int rX = x - offset;
+        int randLoc = rX + y * width;
+        pixels[loc] = color(255);
+        // stroke(255);
+        // circle(x, y, 0.1);
+
+        pixels[randLoc] = color(0);
+        // stroke(0);
+        // circle(rX, y, 0.1);
+
+        if (y - yCounter >= 50){
+          yCounter = y;
+          offset *= -1;
         }
-      }
+      } 
     }
   }
   updatePixels();
+  saveFrame("circle_jagged.png");
   endRecord();
 }
